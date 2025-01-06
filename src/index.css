@@ -1,0 +1,21 @@
+@import "../node_modules/@syncfusion/ej2-base/styles/material.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-neutral-200 font-poppins;
+}
+
+@layer utilities {
+  .text-header {
+    @apply text-5xl font-semibold text-neutral-900 uppercase;
+  }
+
+  .tooltip {
+    --tooltip-color: #fff;
+    --tooltip-text-color: #171717;
+    @apply z-[1000];
+  }
+}
