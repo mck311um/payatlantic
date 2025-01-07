@@ -3,6 +3,7 @@ import axios from "axios";
 import { Toaster } from "react-hot-toast";
 import { RouterProvider } from "react-router-dom";
 import router from "./routes";
+import { AuthContextProvider } from "./context/AuthContext";
 
 if (process.env.NODE_ENV === "production") {
   axios.defaults.baseURL = "https://devvize-hris-server.devvize.com";
@@ -18,10 +19,10 @@ axios.defaults.withCredentials = true;
 
 const App = () => {
   return (
-    <div>
+    <AuthContextProvider>
       <Toaster position="bottom-right" toastOptions={{ duration: 4000 }} />
       <RouterProvider router={router} />
-    </div>
+    </AuthContextProvider>
   );
 };
 
