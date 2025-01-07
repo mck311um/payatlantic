@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.2.0",
     "@syncfusion/ej2-base": "^28.1.33",
     "@syncfusion/ej2-buttons": "^28.1.37",
+    "@syncfusion/ej2-react-grids": "^28.1.38",
     "axios": "^1.7.9",
     "framer-motion": "^11.15.0",
     "lucide-react": "^0.469.0",

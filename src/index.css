@@ -1,11 +1,73 @@
 @import "../node_modules/@syncfusion/ej2-base/styles/material.css";
+@import "../node_modules/@syncfusion/ej2-react-grids/styles/material.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+.e-grid {
+  border-radius: 12px;
+}
+
+.e-gridheader {
+  @apply rounded-t-lg;
+}
+
+.e-gridcontent {
+  @apply rounded-b-lg font-poppins text-lg cursor-pointer;
+}
+
+.e-grid .e-rowcell {
+  @apply text-base-100 text-sm;
+}
+
+.e-grid .e-headercelldiv {
+  @apply text-lg;
+}
+
+.e-grid .e-headercell {
+  @apply text-neutral-900  bg-gray-100 text-base font-poppins;
+}
+
+.e-grid .e-gridheader .e-icons {
+  @apply text-neutral-900;
+}
+
+.e-grid
+  .e-gridheader
+  .e-icons:not(.e-icon-hide):not(.e-check):not(.e-stop):not(
+    .e-icon-reorderuparrow
+  ):not(.e-icon-reorderdownarrow) {
+  @apply text-neutral-900;
+}
+
+.e-grid
+  th.e-headercell[aria-sort="ascending"]:not(.e-columnselection)
+  .e-headertext,
+.e-grid
+  th.e-headercell[aria-sort="descending"]:not(.e-columnselection)
+  .e-headertext,
+.e-grid th.e-headercell[aria-sort="ascending"] .e-sortfilterdiv,
+.e-grid th.e-headercell[aria-sort="descending"] .e-sortfilterdiv {
+  @apply text-neutral-900;
+}
+
+.e-grid,
+.e-grid .e-toolbar {
+  @apply rounded-lg mb-3;
+}
+
+.e-grid .e-toolbar .e-tbar-btn-text,
+.e-grid .e-toolbar .e-toolbar-items .e-toolbar-item .e-tbar-btn-text {
+  @apply font-poppins;
+}
+
+.e-grid th.e-headercell[aria-sort="ascending"] .e-headertext {
+  @apply text-neutral-900;
+}
+
 body {
-  @apply bg-neutral-200 font-poppins;
+  @apply bg-neutral-100 font-poppins;
 }
 
 @layer utilities {
@@ -17,5 +79,49 @@ body {
     --tooltip-color: #fff;
     --tooltip-text-color: #171717;
     @apply z-[1000];
+  }
+
+  .modal-title {
+    @apply font-bold text-2xl text-neutral-900 uppercase;
+  }
+
+  .modal-description {
+    @apply text-lg text-neutral-700 py-2;
+  }
+
+  .form-input {
+    @apply input input-bordered w-full bg-white text-neutral-900 text-lg border-2
+  rounded-lg transition-colors duration-200 ease-in-out read-only:bg-neutral-300;
+
+    &:hover {
+      @apply border-main;
+    }
+
+    &:focus {
+      @apply border-main outline-none read-only:border-none;
+    }
+
+    &:read-only {
+      @apply border-gray-400;
+      &:focus {
+        @apply border-gray-400 outline-none ring-0;
+      }
+    }
+  }
+
+  .form-label {
+    @apply label-text text-lg text-neutral-800;
+  }
+
+  .form-select {
+    @apply select select-bordered bg-white text-neutral-900 text-lg border-2 border-gray-300 rounded-lg transition-colors duration-200 ease-in-out;
+
+    &:hover {
+      @apply border-main;
+    }
+
+    &:focus {
+      @apply border-main outline-none;
+    }
   }
 }

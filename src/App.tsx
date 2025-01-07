@@ -4,6 +4,7 @@ import { Toaster } from "react-hot-toast";
 import { RouterProvider } from "react-router-dom";
 import router from "./routes";
 import { AuthContextProvider } from "./context/AuthContext";
+import AdminProvider from "./providers/AdminProvider";
 
 if (process.env.NODE_ENV === "production") {
   axios.defaults.baseURL = "https://devvize-hris-server.devvize.com";
@@ -12,7 +13,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 registerLicense(
-  "Ngo9BigBOggjHTQxAR8/V1NDaF5cWWtCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWH9feHVVRGZfVUV0WEI="
+  "Ngo9BigBOggjHTQxAR8/V1NMaF5cXmRCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdmWX5ednZXRmFeVUN/Xko="
 );
 
 axios.defaults.withCredentials = true;
@@ -20,8 +21,10 @@ axios.defaults.withCredentials = true;
 const App = () => {
   return (
     <AuthContextProvider>
-      <Toaster position="bottom-right" toastOptions={{ duration: 4000 }} />
-      <RouterProvider router={router} />
+      <AdminProvider>
+        <Toaster position="bottom-right" toastOptions={{ duration: 4000 }} />
+        <RouterProvider router={router} />
+      </AdminProvider>
     </AuthContextProvider>
   );
 };

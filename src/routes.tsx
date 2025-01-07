@@ -3,6 +3,8 @@ import LoginPage from "./pages/Login/LoginPage";
 import PrivateRoute from "./components/PrivateRoute";
 import ErrorPage from "./pages/ErrorPage";
 import Dashboard from "./pages/Dashboard";
+import AdminPage from "./pages/Administration/AdminPage";
+import DepartmentsPage from "./pages/Administration/sections/DepartmentsPage";
 
 const router = createBrowserRouter(
   [
@@ -11,7 +13,12 @@ const router = createBrowserRouter(
       path: "/app",
       element: <PrivateRoute />,
       errorElement: <ErrorPage />,
-      children: [{ path: "", element: <Dashboard /> }],
+      children: [
+        { path: "", element: <Dashboard /> },
+
+        { path: "administration", element: <AdminPage /> },
+        { path: "administration/departments", element: <DepartmentsPage /> },
+      ],
     },
   ],
   {
