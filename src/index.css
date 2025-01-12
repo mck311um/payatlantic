@@ -67,7 +67,7 @@
 }
 
 body {
-  @apply bg-neutral-100 font-poppins;
+  @apply bg-neutral-50 font-poppins;
 }
 
 @layer utilities {
@@ -82,11 +82,11 @@ body {
   }
 
   .modal-title {
-    @apply font-bold text-2xl text-neutral-900 uppercase;
+    @apply text-xl font-semibold mb-4;
   }
 
   .modal-description {
-    @apply text-lg text-neutral-700 py-2;
+    @apply text-lg text-gray-500;
   }
 
   .form-input {
@@ -94,11 +94,11 @@ body {
   rounded-lg transition-colors duration-200 ease-in-out read-only:bg-neutral-300;
 
     &:hover {
-      @apply border-main;
+      @apply border-neutral-400;
     }
 
     &:focus {
-      @apply border-main outline-none read-only:border-none;
+      @apply border-neutral-400 outline-none read-only:border-none;
     }
 
     &:read-only {
@@ -110,18 +110,30 @@ body {
   }
 
   .form-label {
-    @apply label-text text-lg text-neutral-800;
+    @apply label-text text-base text-neutral-800;
   }
 
   .form-select {
     @apply select select-bordered bg-white text-neutral-900 text-lg border-2 border-gray-300 rounded-lg transition-colors duration-200 ease-in-out;
 
     &:hover {
-      @apply border-main;
+      @apply border-neutral-400;
     }
 
     &:focus {
-      @apply border-main outline-none;
+      @apply border-neutral-400 outline-none;
+    }
+  }
+
+  .form-textarea {
+    @apply textarea textarea-bordered w-full bg-white text-neutral-900 text-lg border-2 read-only:bg-neutral-300 border-gray-300 rounded-lg transition-colors duration-200 ease-in-out;
+
+    &:hover {
+      @apply border-neutral-400;
+    }
+
+    &:focus {
+      @apply border-neutral-400 outline-none;
     }
   }
 }

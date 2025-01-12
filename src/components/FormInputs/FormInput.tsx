@@ -7,6 +7,7 @@ function FormInput({
   label,
   required,
   isValid,
+  placeholder,
 }: FormInputProps) {
   return (
     <label className="form-control w-full">
@@ -22,6 +23,7 @@ function FormInput({
         onChange={handleInputChange(name)}
         type={type}
         required
+        placeholder={placeholder}
         className={`form-input ${
           isValid === false ? "border-red-500" : "border-gray-300"
         }`}

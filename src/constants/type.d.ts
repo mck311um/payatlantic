@@ -36,17 +36,32 @@ interface Link {
 
 interface AdminData {
   departments: Department[];
+  positions: Position[];
 }
 
 interface Department {
   departmentId: string;
   department: string;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
   modifiedBy: string;
   headCount: number;
   departmentHead: string;
+  description: string;
+}
+
+interface Position {
+  positionId: string;
+  position: string;
+  isActive: boolean;
+  department: string;
+  departmentId: string;
+  headCount: number;
+  createdAt?: string;
+  updatedAt?: string;
+  modifiedBy: string;
+  description: string;
 }
 
 interface ManageItemModalProp {
@@ -92,6 +107,7 @@ interface FormInputProps {
   value: string;
   required: boolean;
   isValid: boolean;
+  placeholder?: string;
 }
 
 interface FormCheckboxProps {
@@ -110,4 +126,18 @@ interface FormTextAreaProps {
   isValid: boolean;
   readOnly: boolean;
   rows: number;
+  placeholder?: string;
+}
+
+interface FormAutoCompleteProps {
+  value: string;
+  handleInputChange: (name: string) => (e: any) => void;
+  data: any[];
+  valueField: string;
+  placeholder: string;
+  name: string;
+  labelFields: string[];
+  required?: boolean;
+  isValid?: boolean;
+  label: string;
 }

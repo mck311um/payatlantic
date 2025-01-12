@@ -1,36 +1,39 @@
 import React, { useCallback, useContext, useEffect, useState } from "react";
-import PageLayout from "../../../components/PageLayout";
-import SearchBar from "../../../components/SearchBar";
-import ButtonRow from "../../../components/ButtonRow";
 import { useAuthContext } from "../../../hooks/useAuthContext";
-import toast from "react-hot-toast";
 import axios from "axios";
+import toast from "react-hot-toast";
+import { Pencil, Plus, Trash2 } from "lucide-react";
+import PageLayout from "../../../components/PageLayout";
 import {
-  ColumnDirective,
-  ColumnsDirective,
   GridComponent,
+  ColumnsDirective,
+  ColumnDirective,
   Inject,
   Sort,
 } from "@syncfusion/ej2-react-grids";
-import { Pencil, Trash2 } from "lucide-react";
+import ButtonRow from "../../../components/ButtonRow";
 import Loading from "../../../components/Loading";
+import SearchBar from "../../../components/SearchBar";
 import AdminContext from "../../../context/AdminContext";
 import FormInput from "../../../components/FormInputs/FormInput";
 import FormCheckbox from "../../../components/FormInputs/FormCheckbox";
+import FormAutoComplete from "../../../components/FormInputs/FormAutoComplete";
+import { ManageDepartmentsModal } from "./DepartmentsPage";
 import FormTextArea from "../../../components/FormInputs/FormTextArea";
 
-const DepartmentsPage = () => {
-  const title = "Department";
+const PositionsPage = () => {
+  const title = "Position";
   const lowercaseTitle = title.toLowerCase();
 
   const { user, isLoading } = useAuthContext();
 
-  const [data, setData] = useState<Department[]>([]);
-  const [filteredData, setFilteredData] = useState<Department[]>([]);
-  const [itemToDelete, setItemToDelete] = useState<Department | null>(null);
-  const [itemToEdit, setItemToEdit] = useState<Department | null>(null);
+  const [data, setData] = useState<Position[]>([]);
+  const [filteredData, setFilteredData] = useState<Position[]>([]);
+  const [itemToDelete, setItemToDelete] = useState<Position | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<Position | null>(null);
   const [loading, setLoading] = useState(false);
   const [manageModalOpen, setManageModalOpen] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState("");
 
   const fetchData = async () => {
@@ -40,8 +43,8 @@ const DepartmentsPage = () => {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
 
-      const sortedData = res.data.sort((a: Department, b: Department) =>
-        a.department.localeCompare(b.department)
+      const sortedData = res.data.sort((a: Position, b: Position) =>
+        a.position.localeCompare(b.position)
       );
       setData(sortedData);
       setFilteredData(sortedData);
@@ -72,7 +75,7 @@ const DepartmentsPage = () => {
   useEffect(() => {
     const filtered = data
       .filter((el) =>
-        el.department.toLowerCase().includes(searchQuery.toLowerCase())
+        el.position.toLowerCase().includes(searchQuery.toLowerCase())
       )
       .sort((a, b) => a.department.localeCompare(b.department));
     setFilteredData(filtered);
@@ -83,7 +86,7 @@ const DepartmentsPage = () => {
   };
 
   const renderActions = useCallback(
-    (props: Department) => (
+    (props: Position) => (
       <div className="">
         <button
           className="text-blue-600 hover:text-blue-900 mr-3"
@@ -126,9 +129,9 @@ const DepartmentsPage = () => {
   return (
     <PageLayout>
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">Departments</h1>
+        <h1 className="text-4xl font-bold text-gray-900">{title}s</h1>
         <p className="mt-1 text-lg text-gray-500">
-          Manage your organization's departments
+          Define and manage job positions
         </p>
       </div>
       <div className="flex gap-3 justify-between">
@@ -153,10 +156,10 @@ const DepartmentsPage = () => {
           loadingIndicator={{ indicatorType: "Shimmer" }}
         >
           <ColumnsDirective>
-            <ColumnDirective field="department" headerText="Department" />
+            <ColumnDirective field="position" headerText="Positions" />
             <ColumnDirective
-              field="departmentHead"
-              headerText="Department Head"
+              field="department"
+              headerText="Department"
               isPrimaryKey={true}
             />
             <ColumnDirective
@@ -182,7 +185,7 @@ const DepartmentsPage = () => {
         </GridComponent>
       )}
       {manageModalOpen && (
-        <ManageDepartmentsModal
+        <ManagePositionModal
           onClose={() => {
             setManageModalOpen(false);
             setLoading(true);
@@ -201,9 +204,9 @@ const DepartmentsPage = () => {
   );
 };
 
-export default DepartmentsPage;
+export default PositionsPage;
 
-export function ManageDepartmentsModal({
+export function ManagePositionModal({
   onClose,
   itemToEdit,
   title,
@@ -215,12 +218,14 @@ export function ManageDepartmentsModal({
 
   const [isValid, setIsValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [item, setItem] = useState<Department>(
+  const [addDepartmentOpen, setAddDepartmentOpen] = useState(false);
+
+  const [item, setItem] = useState<Position>(
     itemToEdit ||
       itemToDelete || {
+        position: "",
         departmentId: "",
         department: "",
-        departmentHead: "",
         isActive: true,
         description: "",
       }
@@ -231,30 +236,40 @@ export function ManageDepartmentsModal({
       setIsSubmitting(true);
       if (itemToEdit) {
         await axios.put(
-          `admin/${lowercaseTitle}s/${itemToEdit.departmentId}`,
+          `admin/${lowercaseTitle}s/${itemToEdit.positionId}`,
           item,
           {
             headers: { Authorization: `Bearer ${user?.token}` },
           }
         );
-        toast.success("Department updated successfully");
+        toast.success(`${title} updated successfully`);
       } else if (itemToDelete) {
         await axios.delete(
-          `admin/${lowercaseTitle}s/${itemToDelete.departmentId}`,
+          `admin/${lowercaseTitle}s/${itemToDelete.positionId}`,
           {
             headers: { Authorization: `Bearer ${user?.token}` },
           }
         );
-        toast.success("Department deleted successfully");
+        toast.success(`${title} deleted successfully`);
       } else {
         await axios.post(`admin/${lowercaseTitle}s`, item, {
           headers: { Authorization: `Bearer ${user?.token}` },
         });
-        toast.success("Department added successfully");
+        toast.success(`${title} added successfully`);
       }
     } catch (error: any) {
       toast.error(error.response.data.message);
     } finally {
+      setItem({
+        position: "",
+        departmentId: "",
+        department: "",
+        isActive: true,
+        positionId: "",
+        headCount: 0,
+        modifiedBy: "",
+        description: "",
+      });
       refreshData();
       setIsSubmitting(false);
       onClose();
@@ -273,7 +288,11 @@ export function ManageDepartmentsModal({
     let isFormValid = true;
 
     if (!isEditing) {
-      if (item.department.trim() === "") {
+      if (item.position.trim() === "") {
+        isFormValid = false;
+      }
+
+      if (item.departmentId.trim() === "") {
         isFormValid = false;
       }
     }
@@ -288,7 +307,7 @@ export function ManageDepartmentsModal({
   return (
     <dialog
       open
-      className="modal fixed inset-0 flex justify-center items-center bg-black/50"
+      className="modal fixed inset-0 flex justify-center items-center bg-black/50 z-50"
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
     >
@@ -305,24 +324,44 @@ export function ManageDepartmentsModal({
           <div className="flex flex-col gap-3">
             <FormInput
               handleInputChange={handleInputChange}
-              label="Department"
-              name="department"
-              value={item.department}
+              label="Title"
+              name="position"
+              value={item.position}
               readOnly={itemToDelete ? true : false}
               type="text"
               isValid={isValid}
               required={true}
             />
-            <FormInput
-              handleInputChange={handleInputChange}
-              label="Department Head"
-              name="departmentHead"
-              value={item.departmentHead}
-              readOnly={itemToDelete ? true : false}
-              type="text"
-              isValid={isValid}
-              required={false}
-            />
+            <div className="flex gap-2 justify-end items-end">
+              <FormAutoComplete
+                value={item.departmentId}
+                handleInputChange={handleInputChange}
+                data={
+                  data?.departments.sort((a, b) =>
+                    a.department.localeCompare(b.department)
+                  ) ?? []
+                }
+                valueField="departmentId"
+                placeholder="Select Department"
+                name="departmentId"
+                labelFields={["department"]}
+                label="Department"
+                required={true}
+              />
+              <div
+                className="tooltip tooltip-bottom tooltip-info"
+                data-tip="New"
+              >
+                <button
+                  className="btn btn-success text-white btn-outline btn-square"
+                  onClick={() => {
+                    setAddDepartmentOpen(true);
+                  }}
+                >
+                  <Plus />
+                </button>
+              </div>
+            </div>
             <FormTextArea
               value={item.description}
               handleInputChange={handleInputChange}
@@ -384,6 +423,15 @@ export function ManageDepartmentsModal({
           </button>
         </div>
       </div>
+      {addDepartmentOpen && (
+        <ManageDepartmentsModal
+          onClose={() => {
+            setAddDepartmentOpen(false);
+          }}
+          lowercaseTitle={"department"}
+          title={"department"}
+        />
+      )}
     </dialog>
   );
 }

@@ -7,6 +7,7 @@ function FormTextArea({
   isValid,
   readOnly,
   rows,
+  placeholder,
 }: FormTextAreaProps) {
   return (
     <label className="form-control w-full">
@@ -22,6 +23,7 @@ function FormTextArea({
         value={value}
         onChange={handleInputChange(name)}
         required
+        placeholder={placeholder}
         readOnly={readOnly}
         className={`form-textarea  ${
           isValid === false ? "border-red-500" : "border-gray-300"

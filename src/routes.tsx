@@ -5,6 +5,7 @@ import ErrorPage from "./pages/ErrorPage";
 import Dashboard from "./pages/Dashboard";
 import AdminPage from "./pages/Administration/AdminPage";
 import DepartmentsPage from "./pages/Administration/sections/DepartmentsPage";
+import PositionsPage from "./pages/Administration/sections/PositionsPage";
 
 const router = createBrowserRouter(
   [
@@ -18,6 +19,7 @@ const router = createBrowserRouter(
 
         { path: "administration", element: <AdminPage /> },
         { path: "administration/departments", element: <DepartmentsPage /> },
+        { path: "administration/positions", element: <PositionsPage /> },
       ],
     },
   ],
