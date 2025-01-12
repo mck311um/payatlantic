@@ -4,7 +4,6 @@ import {
   Calendar,
   CalendarMinus,
   CircleMinus,
-  DollarSign,
   Gift,
   Landmark,
   MapPin,

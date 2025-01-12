@@ -1,12 +1,10 @@
-import { motion, useAnimationControls } from "framer-motion";
+import { AnimatePresence, motion, useAnimationControls } from "framer-motion";
 import { useEffect, useState } from "react";
 import NavLink from "./NavLink";
 import {
   Building2,
   CalendarDays,
   ClipboardPenLine,
-  Cog,
-  Currency,
   DollarSign,
   FolderOpen,
   LayoutDashboard,
@@ -15,6 +13,7 @@ import {
   Wrench,
 } from "lucide-react";
 import ExpandableNavLink from "./ExpandableNavLink";
+import ExpandedNavigation from "./ExpandedNavigation";
 
 const navVariants = {
   close: {
@@ -200,6 +199,17 @@ const NavBar = () => {
           </NavLink>
         </div>
       </motion.nav>
+      <AnimatePresence>
+        {selectedNavLink && (
+          <ExpandedNavigation
+            selectedNavLink={selectedNavLink}
+            setSelectedNavLink={setSelectedNavLink}
+            isOpen={isOpen}
+            links={getSecondaryLinks()}
+            setIsOpen={setIsOpen}
+          />
+        )}
+      </AnimatePresence>
     </>
   );
 };

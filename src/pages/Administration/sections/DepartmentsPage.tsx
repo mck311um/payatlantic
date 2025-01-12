@@ -211,6 +211,7 @@ export function ManageDepartmentsModal({
   itemToDelete,
 }: ManageItemModalProp) {
   const { user } = useAuthContext();
+  //@ts-ignore
   const { data, fetchData: refreshData } = useContext(AdminContext);
 
   const [isValid, setIsValid] = useState(false);

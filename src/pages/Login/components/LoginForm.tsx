@@ -5,6 +5,7 @@ import { PasswordField } from "./PasswordField";
 import { useLogIn } from "../../../hooks/useLogin";
 
 export function LoginForm() {
+  //@ts-ignore
   const { login, error, loading } = useLogIn();
   const [formData, setFormData] = useState({
     username: "",
