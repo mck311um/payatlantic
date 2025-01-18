@@ -6,6 +6,9 @@ import Dashboard from "./pages/Dashboard";
 import AdminPage from "./pages/Administration/AdminPage";
 import DepartmentsPage from "./pages/Administration/sections/DepartmentsPage";
 import PositionsPage from "./pages/Administration/sections/PositionsPage";
+import BranchPage from "./pages/Administration/sections/LocationPage";
+import AllowancesPage from "./pages/Administration/sections/AllowancesPage";
+import BenefitsPage from "./pages/Administration/sections/BenefitsPage";
 
 const router = createBrowserRouter(
   [
@@ -20,6 +23,9 @@ const router = createBrowserRouter(
         { path: "administration", element: <AdminPage /> },
         { path: "administration/departments", element: <DepartmentsPage /> },
         { path: "administration/positions", element: <PositionsPage /> },
+        { path: "administration/branches", element: <BranchPage /> },
+        { path: "administration/allowances", element: <AllowancesPage /> },
+        { path: "administration/benefits", element: <BenefitsPage /> },
       ],
     },
   ],

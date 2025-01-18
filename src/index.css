@@ -82,7 +82,7 @@ body {
   }
 
   .modal-title {
-    @apply text-xl font-semibold mb-4;
+    @apply text-3xl font-medium mb-4;
   }
 
   .modal-description {

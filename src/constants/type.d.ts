@@ -37,6 +37,10 @@ interface Link {
 interface AdminData {
   departments: Department[];
   positions: Position[];
+  branches: Branch[];
+  countries: Country[];
+  villages: Village[];
+  employees: Employee[];
 }
 
 interface Department {
@@ -62,6 +66,49 @@ interface Position {
   updatedAt?: string;
   modifiedBy: string;
   description: string;
+}
+
+interface Branch {
+  branchId: string;
+  branch: string;
+  isActive: boolean;
+  isMain: boolean;
+  address: Address;
+  isDeleted?: boolean;
+  modifiedBy: string;
+  createdAt?: string;
+  updatedAt?: string;
+  [key: string]: any;
+}
+
+interface Benefit {
+  benefitId: string;
+  benefit: string;
+  description: string;
+  unit: string;
+  isDeleted?: boolean;
+  modifiedBy: string;
+  createdAt?: string;
+  updatedAt?: string;
+  isActive: boolean;
+}
+
+interface Address {
+  street: string;
+  city: string;
+  country: string;
+}
+
+interface Country {
+  countryId: string;
+  country: string;
+  countryCode: string;
+}
+
+interface Village {
+  villageId: string;
+  village: string;
+  countryCode: string;
 }
 
 interface ManageItemModalProp {

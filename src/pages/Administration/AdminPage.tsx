@@ -7,6 +7,7 @@ import {
   Gift,
   Landmark,
   MapPin,
+  PieChart,
   UserCog,
   UserPlus,
 } from "lucide-react";
@@ -50,10 +51,10 @@ const adminCards = [
     path: "positions",
   },
   {
-    title: "Locations",
+    title: "Branches",
     description: "Manage office locations and facilities",
     icon: <MapPin className="w-6 h-6 text-main" />,
-    path: "locations",
+    path: "branches",
   },
   {
     title: "Holidays",
@@ -88,7 +89,7 @@ const adminCards = [
   {
     title: "Allowances",
     description: "Define and manage allowances (e.g., vacation, sick days)",
-    icon: <Gift className="w-6 h-6 text-main" />,
+    icon: <PieChart className="w-6 h-6 text-main" />,
     path: "allowances",
   },
   {
@@ -102,5 +103,12 @@ const adminCards = [
     description: "Manage financial institutions and accounts",
     icon: <Landmark className="w-6 h-6 text-main" />,
     path: "financial-institutions",
+  },
+  {
+    title: "Benefits",
+    description:
+      "Define and manage benefits (e.g., health insurance, dental insurance)",
+    icon: <Gift className="w-6 h-6 text-main" />,
+    path: "benefits",
   },
 ];
