@@ -9,6 +9,7 @@ import PositionsPage from "./pages/Administration/sections/PositionsPage";
 import BranchPage from "./pages/Administration/sections/LocationPage";
 import AllowancesPage from "./pages/Administration/sections/AllowancesPage";
 import BenefitsPage from "./pages/Administration/sections/BenefitsPage";
+import BanksPage from "./pages/Administration/sections/BanksPage";
 
 const router = createBrowserRouter(
   [
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
         { path: "administration/branches", element: <BranchPage /> },
         { path: "administration/allowances", element: <AllowancesPage /> },
         { path: "administration/benefits", element: <BenefitsPage /> },
+        { path: "administration/banks", element: <BanksPage /> },
       ],
     },
   ],

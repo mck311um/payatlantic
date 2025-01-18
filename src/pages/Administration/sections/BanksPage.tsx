@@ -14,25 +14,24 @@ import ButtonRow from "../../../components/ButtonRow";
 import Loading from "../../../components/Loading";
 import PageLayout from "../../../components/PageLayout";
 import SearchBar from "../../../components/SearchBar";
+import FormInput from "../../../components/FormInputs/FormInput";
 import FormAutoComplete from "../../../components/FormInputs/FormAutoComplete";
 import FormCheckbox from "../../../components/FormInputs/FormCheckbox";
 import AdminContext from "../../../context/AdminContext";
 import { ManageDepartmentsModal } from "./DepartmentsPage";
-import FormInput from "../../../components/FormInputs/FormInput";
-import FormTextArea from "../../../components/FormInputs/FormTextArea";
-import FormSelect from "../../../components/FormInputs/FormSelect";
-import { label } from "framer-motion/client";
+import { span } from "framer-motion/client";
+import { getCountryByCountryCode } from "../../../constants/utils";
 
-const BenefitsPage = () => {
-  const title = "Benefit";
+const BanksPage = () => {
+  const title = "Bank";
   const lowercaseTitle = title.toLowerCase();
 
   const { user, isLoading } = useAuthContext();
 
-  const [data, setData] = useState<Benefit[]>([]);
-  const [filteredData, setFilteredData] = useState<Benefit[]>([]);
-  const [itemToDelete, setItemToDelete] = useState<Benefit | null>(null);
-  const [itemToEdit, setItemToEdit] = useState<Benefit | null>(null);
+  const [data, setData] = useState<Bank[]>([]);
+  const [filteredData, setFilteredData] = useState<Bank[]>([]);
+  const [itemToDelete, setItemToDelete] = useState<Bank | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<Bank | null>(null);
   const [loading, setLoading] = useState(false);
   const [manageModalOpen, setManageModalOpen] = useState(false);
 
@@ -45,8 +44,8 @@ const BenefitsPage = () => {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
 
-      const sortedData = res.data.sort((a: Benefit, b: Benefit) =>
-        a.benefit.localeCompare(b.benefit)
+      const sortedData = res.data.sort((a: Bank, b: Bank) =>
+        a.bank.localeCompare(b.bank)
       );
       setData(sortedData);
       setFilteredData(sortedData);
@@ -76,10 +75,8 @@ const BenefitsPage = () => {
 
   useEffect(() => {
     const filtered = data
-      .filter((el) =>
-        el.benefit.toLowerCase().includes(searchQuery.toLowerCase())
-      )
-      .sort((a, b) => a.benefit.localeCompare(b.benefit));
+      .filter((el) => el.bank.toLowerCase().includes(searchQuery.toLowerCase()))
+      .sort((a, b) => a.bank.localeCompare(b.bank));
     setFilteredData(filtered);
   }, [searchQuery, data]);
 
@@ -88,7 +85,7 @@ const BenefitsPage = () => {
   };
 
   const renderActions = useCallback(
-    (props: Benefit) => (
+    (props: Bank) => (
       <div className="">
         <button
           className="text-blue-600 hover:text-blue-900 mr-3"
@@ -114,7 +111,7 @@ const BenefitsPage = () => {
   );
 
   const renderStatus = useCallback(
-    (props: Benefit) => (
+    (props: Bank) => (
       <span
         className={`inline-flex items-center px-2 py-1.5 rounded-full text-xs font-medium ${
           props.isActive === true
@@ -128,12 +125,28 @@ const BenefitsPage = () => {
     []
   );
 
+  const renderAddress = useCallback(
+    (props: Bank) => (
+      <span>
+        {props.address.street}, {props.address.city},{" "}
+        {getCountryByCountryCode(props.address.country)}
+      </span>
+    ),
+    []
+  );
+
+  const renderType = useCallback(
+    (props: Bank) => (
+      <span>{props.isCreditor ? "Creditor" : "Bank/Creditor"}</span>
+    ),
+    []
+  );
   return (
     <PageLayout>
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">Employee {title}s</h1>
+        <h1 className="text-4xl font-bold text-gray-900">{title}s</h1>
         <p className="mt-1 text-lg text-gray-500">
-          Define and manage employee benefits
+          Manage banks for employee payments
         </p>
       </div>
       <div className="flex gap-3 justify-between">
@@ -158,14 +171,21 @@ const BenefitsPage = () => {
           loadingIndicator={{ indicatorType: "Shimmer" }}
         >
           <ColumnsDirective>
-            <ColumnDirective field="benefit" headerText="Benefit" width={300} />
+            <ColumnDirective field="bankCode" headerText="Code" width={100} />
+            <ColumnDirective field="bank" headerText="Bank" width={400} />
             <ColumnDirective
-              field="description"
-              headerText="Description"
+              field="address"
+              headerText="Address"
               isPrimaryKey={true}
-              width={500}
+              template={renderAddress}
+              width={400}
             />
-            <ColumnDirective field="unit" headerText="Unit" width={200} />
+            <ColumnDirective
+              field="isCreditor"
+              headerText="Bank Type"
+              width={200}
+              template={renderType}
+            />
 
             <ColumnDirective
               field="isActive"
@@ -184,7 +204,7 @@ const BenefitsPage = () => {
         </GridComponent>
       )}
       {manageModalOpen && (
-        <ManageBenefitModal
+        <ManageBankModal
           onClose={() => {
             setManageModalOpen(false);
             setLoading(true);
@@ -203,9 +223,9 @@ const BenefitsPage = () => {
   );
 };
 
-export default BenefitsPage;
+export default BanksPage;
 
-export function ManageBenefitModal({
+export function ManageBankModal({
   onClose,
   itemToEdit,
   title,
@@ -213,24 +233,24 @@ export function ManageBenefitModal({
   itemToDelete,
 }: ManageItemModalProp) {
   const { user } = useAuthContext();
-  const { fetchData: refreshData } = useContext(AdminContext);
-
-  const units = [
-    { label: "Days", unit: "days" },
-    { label: "Dollars", unit: "dollars" },
-  ];
+  const { data, fetchData: refreshData } = useContext(AdminContext);
 
   const [isValid, setIsValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addDepartmentOpen, setAddDepartmentOpen] = useState(false);
 
-  const [item, setItem] = useState<Benefit>(
+  const [item, setItem] = useState<Bank>(
     itemToEdit ||
       itemToDelete || {
-        benefit: "",
-        description: "",
-        unit: "",
+        bank: "",
+        bankCode: "",
         isActive: true,
+        isCreditor: false,
+        address: {
+          street: "",
+          city: "",
+          country: "",
+        },
       }
   );
 
@@ -238,21 +258,14 @@ export function ManageBenefitModal({
     try {
       setIsSubmitting(true);
       if (itemToEdit) {
-        await axios.put(
-          `admin/${lowercaseTitle}s/${itemToEdit.benefitId}`,
-          item,
-          {
-            headers: { Authorization: `Bearer ${user?.token}` },
-          }
-        );
+        await axios.put(`admin/${lowercaseTitle}s/${itemToEdit.bankId}`, item, {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        });
         toast.success(`${title} updated successfully`);
       } else if (itemToDelete) {
-        await axios.delete(
-          `admin/${lowercaseTitle}es/${itemToDelete.benefitId}`,
-          {
-            headers: { Authorization: `Bearer ${user?.token}` },
-          }
-        );
+        await axios.delete(`admin/${lowercaseTitle}s/${itemToDelete.bankId}`, {
+          headers: { Authorization: `Bearer ${user?.token}` },
+        });
         toast.success(`${title} deleted successfully`);
       } else {
         await axios.post(`admin/${lowercaseTitle}s`, item, {
@@ -271,17 +284,39 @@ export function ManageBenefitModal({
 
   const handleInputChange = (name: string) => (e: any) => {
     const { type, checked, value } = e.target;
-    setItem((prevData) => ({
-      ...prevData,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    const keys = name.split(".");
+    setItem((prevData) => {
+      const updatedItem = { ...prevData };
+      let nested = updatedItem;
+      for (let i = 0; i < keys.length - 1; i++) {
+        nested = nested[keys[i]];
+      }
+      nested[keys[keys.length - 1]] = type === "checkbox" ? checked : value;
+      return updatedItem;
+    });
   };
 
   const validateForm = (isEditing: boolean) => {
     let isFormValid = true;
 
     if (!isEditing) {
-      if (item.benefit.trim() === "") {
+      if (item.bank.trim() === "") {
+        isFormValid = false;
+      }
+
+      if (item.bankCode.trim() === "") {
+        isFormValid = false;
+      }
+
+      if (item.address.street.trim() === "") {
+        isFormValid = false;
+      }
+
+      if (item.address.city.trim() === "") {
+        isFormValid = false;
+      }
+
+      if (item.address.country.trim() === "") {
         isFormValid = false;
       }
     }
@@ -311,44 +346,89 @@ export function ManageBenefitModal({
           </h1>
 
           <div className="flex flex-col gap-3">
+            <div className="flex gap-3">
+              <div className="w-4/5">
+                <FormInput
+                  handleInputChange={handleInputChange}
+                  label="Bank"
+                  name="bank"
+                  value={item.bank}
+                  readOnly={itemToDelete ? true : false}
+                  type="text"
+                  isValid={isValid}
+                  required={true}
+                />
+              </div>
+              <div className="w-1/5">
+                <FormInput
+                  handleInputChange={handleInputChange}
+                  label="Code"
+                  name="bankCode"
+                  value={item.bankCode}
+                  readOnly={itemToDelete ? true : false}
+                  type="text"
+                  isValid={isValid}
+                  required={true}
+                />
+              </div>
+            </div>
+
             <FormInput
               handleInputChange={handleInputChange}
-              label="Benefit"
-              name="benefit"
-              value={item.benefit}
+              label="Street"
+              name="address.street"
+              value={item.address.street}
               readOnly={itemToDelete ? true : false}
               type="text"
               isValid={isValid}
               required={true}
             />
-            <FormSelect
-              value={item.unit}
-              data={units}
-              handleInputChange={handleInputChange}
-              label="Unit"
-              labelField="label"
-              name="unit"
-              placeholder="Unit"
-              valueField="unit"
-              required={true}
-              isValid={false}
-            />
-            <FormTextArea
-              value={item.description}
-              handleInputChange={handleInputChange}
-              label="Description"
-              name="description"
-              required={true}
-              isValid={false}
-              readOnly={false}
-              rows={2}
-            />
-            <FormCheckbox
-              checked={item.isActive}
-              name="isActive"
-              handleInputChange={handleInputChange}
-              label="Active"
-            />
+            <div className="flex gap-3">
+              <FormAutoComplete
+                value={item.address.city}
+                handleInputChange={handleInputChange}
+                data={
+                  data?.villages.sort((a, b) =>
+                    a.village.localeCompare(b.village)
+                  ) ?? []
+                }
+                valueField="village"
+                placeholder="Village"
+                name={"address.city"}
+                labelFields={["village"]}
+                label={"Village"}
+                required={true}
+              />
+              <FormAutoComplete
+                value={item.address.country}
+                handleInputChange={handleInputChange}
+                data={
+                  data?.countries.sort((a, b) =>
+                    a.country.localeCompare(b.country)
+                  ) ?? []
+                }
+                valueField="countryCode"
+                placeholder="Country"
+                name={"address.country"}
+                labelFields={["country"]}
+                label={"Country"}
+                required={true}
+              />
+            </div>
+            <div className="flex flex-col">
+              <FormCheckbox
+                checked={item.isActive}
+                name="isActive"
+                handleInputChange={handleInputChange}
+                label="Active"
+              />
+              <FormCheckbox
+                checked={item.isCreditor}
+                name="isCreditor"
+                handleInputChange={handleInputChange}
+                label="Bank is a Creditor Only"
+              />
+            </div>
           </div>
         </div>
         <div className="modal-action">
@@ -358,7 +438,7 @@ export function ManageBenefitModal({
           <button
             className="btn btn-success text-white disabled:text-white font-bold text-base"
             onClick={handleSubmit}
-            disabled={isSubmitting || !isValid || itemToDelete}
+            disabled={isSubmitting || !isValid || !itemToDelete}
           >
             {isSubmitting
               ? "Submitting"

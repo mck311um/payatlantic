@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import PageLayout from "../../components/PageLayout";
 import ManagementCard from "../../components/ManagementCard";
+import { title } from "process";
 
 const AdminPage = () => {
   return (
@@ -98,17 +99,18 @@ const adminCards = [
     icon: <CircleMinus className="w-6 h-6 text-main" />,
     path: "deductions",
   },
+
   {
-    title: "Financial Institutions",
-    description: "Manage financial institutions and accounts",
-    icon: <Landmark className="w-6 h-6 text-main" />,
-    path: "financial-institutions",
-  },
-  {
-    title: "Benefits",
+    title: "Employee Benefits",
     description:
       "Define and manage benefits (e.g., health insurance, dental insurance)",
     icon: <Gift className="w-6 h-6 text-main" />,
     path: "benefits",
+  },
+  {
+    title: "Banks",
+    description: "Manage banks for employee payments",
+    icon: <Landmark className="w-6 h-6 text-main" />,
+    path: "banks",
   },
 ];

@@ -41,6 +41,7 @@ interface AdminData {
   countries: Country[];
   villages: Village[];
   employees: Employee[];
+  banks: Bank[];
 }
 
 interface Department {
@@ -109,6 +110,20 @@ interface Village {
   villageId: string;
   village: string;
   countryCode: string;
+}
+
+interface Bank {
+  bankId: string;
+  bank: string;
+  bankCode: string;
+  isActive: boolean;
+  isCreditor: boolean;
+  address: Address;
+  isDeleted: boolean;
+  modifiedBy: string;
+  createdAt?: string;
+  updatedAt?: string;
+  [key: string]: any;
 }
 
 interface ManageItemModalProp {
