@@ -94,7 +94,7 @@ const adminCards = [
     path: "allowances",
   },
   {
-    title: "Deductions",
+    title: "Employee Deductions",
     description: "Define and manage deductions (e.g., taxes, insurance)",
     icon: <CircleMinus className="w-6 h-6 text-main" />,
     path: "deductions",

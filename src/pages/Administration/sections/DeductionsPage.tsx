@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "../../../hooks/useAuthContext";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Settings, Trash2 } from "lucide-react";
 import {
   GridComponent,
   ColumnsDirective,
@@ -15,21 +15,21 @@ import Loading from "../../../components/Loading";
 import PageLayout from "../../../components/PageLayout";
 import SearchBar from "../../../components/SearchBar";
 import FormInput from "../../../components/FormInputs/FormInput";
+import FormSelect from "../../../components/FormInputs/FormSelect";
+import FormTextArea from "../../../components/FormInputs/FormTextArea";
 import FormCheckbox from "../../../components/FormInputs/FormCheckbox";
 import AdminContext from "../../../context/AdminContext";
-import { ManageDepartmentsModal } from "./DepartmentsPage";
-import FormAutoComplete from "../../../components/FormInputs/FormAutoComplete";
 
-const BranchPage = () => {
-  const title = "Branch";
+const DeductionsPage = () => {
+  const title = "Deduction";
   const lowercaseTitle = title.toLowerCase();
 
   const { user, isLoading } = useAuthContext();
 
-  const [data, setData] = useState<Branch[]>([]);
-  const [filteredData, setFilteredData] = useState<Branch[]>([]);
-  const [itemToDelete, setItemToDelete] = useState<Branch | null>(null);
-  const [itemToEdit, setItemToEdit] = useState<Branch | null>(null);
+  const [data, setData] = useState<Deduction[]>([]);
+  const [filteredData, setFilteredData] = useState<Deduction[]>([]);
+  const [itemToDelete, setItemToDelete] = useState<Deduction | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<Deduction | null>(null);
   const [loading, setLoading] = useState(false);
   const [manageModalOpen, setManageModalOpen] = useState(false);
 
@@ -38,12 +38,12 @@ const BranchPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`admin/${lowercaseTitle}es`, {
+      const res = await axios.get(`admin/${lowercaseTitle}s`, {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
 
-      const sortedData = res.data.sort((a: Branch, b: Branch) =>
-        a.branch.localeCompare(b.branch)
+      const sortedData = res.data.sort((a: Deduction, b: Deduction) =>
+        a.deduction.localeCompare(b.deduction)
       );
       setData(sortedData);
       setFilteredData(sortedData);
@@ -74,9 +74,9 @@ const BranchPage = () => {
   useEffect(() => {
     const filtered = data
       .filter((el) =>
-        el.branch.toLowerCase().includes(searchQuery.toLowerCase())
+        el.deduction.toLowerCase().includes(searchQuery.toLowerCase())
       )
-      .sort((a, b) => a.branch.localeCompare(b.branch));
+      .sort((a, b) => a.deduction.localeCompare(b.deduction));
     setFilteredData(filtered);
   }, [searchQuery, data]);
 
@@ -85,26 +85,31 @@ const BranchPage = () => {
   };
 
   const renderActions = useCallback(
-    (props: Branch) => (
+    (props: Deduction) => (
       <div className="">
-        <button
-          className="text-blue-600 hover:text-blue-900 mr-3"
-          onClick={() => {
-            setItemToEdit(props);
-            setManageModalOpen(true);
-          }}
-        >
-          <Pencil className="h-5 w-5" />
-        </button>
-        <button
-          className="text-red-600 hover:text-red-900"
-          onClick={() => {
-            setItemToDelete(props);
-            setManageModalOpen(true);
-          }}
-        >
-          <Trash2 className="h-5 w-5" />
-        </button>
+        <div className="tooltip tooltip-left" data-tip="Manage">
+          <button
+            className="grid-edit-button"
+            onClick={() => {
+              setItemToEdit(props);
+              setManageModalOpen(true);
+            }}
+          >
+            <Settings className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="tooltip tooltip-left" data-tip="Delete">
+          <button
+            className="grid-delete-button"
+            onClick={() => {
+              setItemToDelete(props);
+              setManageModalOpen(true);
+            }}
+          >
+            <Trash2 className="h-5 w-5" />
+          </button>
+        </div>
       </div>
     ),
     []
@@ -125,21 +130,12 @@ const BranchPage = () => {
     []
   );
 
-  const renderAddress = useCallback(
-    (props: Branch) => (
-      <span>
-        {props.address.street}, {props.address.city}, {props.address.country}
-      </span>
-    ),
-    []
-  );
-
   return (
     <PageLayout>
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">{title}es</h1>
+        <h1 className="text-4xl font-bold text-gray-900">{title}s</h1>
         <p className="mt-1 text-lg text-gray-500">
-          Manage office locations and facilities
+          Define and manage deductions
         </p>
       </div>
       <div className="flex gap-3 justify-between">
@@ -164,39 +160,36 @@ const BranchPage = () => {
           loadingIndicator={{ indicatorType: "Shimmer" }}
         >
           <ColumnsDirective>
-            <ColumnDirective field="branch" headerText="Branch" width={300} />
             <ColumnDirective
-              field="address"
-              headerText="Address"
-              isPrimaryKey={true}
-              template={renderAddress}
+              field="deduction"
+              headerText="Deduction"
+              width={200}
+            />
+            <ColumnDirective
+              field="description"
+              headerText="Description"
               width={500}
             />
-            <ColumnDirective
-              field="headCount"
-              headerText="Head Count"
-              width={200}
-              textAlign="Center"
-            />
-
+            <ColumnDirective field="unit" headerText="Unit" width={100} />
             <ColumnDirective
               field="isActive"
               headerText="Status"
-              width={150}
+              width={100}
               template={renderStatus}
             />
             <ColumnDirective
               field=""
-              width={150}
+              width={100}
               headerText="Actions"
               template={renderActions}
+              textAlign={"Right"}
             />
           </ColumnsDirective>
           <Inject services={[Sort]} />
         </GridComponent>
       )}
       {manageModalOpen && (
-        <ManageLocationModal
+        <ManageDeductionModal
           onClose={() => {
             setManageModalOpen(false);
             setLoading(true);
@@ -215,9 +208,9 @@ const BranchPage = () => {
   );
 };
 
-export default BranchPage;
+export default DeductionsPage;
 
-export function ManageLocationModal({
+export function ManageDeductionModal({
   onClose,
   itemToEdit,
   title,
@@ -225,23 +218,24 @@ export function ManageLocationModal({
   itemToDelete,
 }: ManageItemModalProp) {
   const { user } = useAuthContext();
-  const { data, fetchData: refreshData } = useContext(AdminContext);
+  const { fetchData: refreshData } = useContext(AdminContext);
+
+  const units = [
+    { label: "Days", unit: "days" },
+    { label: "Dollars", unit: "dollars" },
+    { label: "Percentage", unit: "percentage" },
+  ];
 
   const [isValid, setIsValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [addDepartmentOpen, setAddDepartmentOpen] = useState(false);
 
-  const [item, setItem] = useState<Branch>(
+  const [item, setItem] = useState<Deduction>(
     itemToEdit ||
       itemToDelete || {
-        branch: "",
+        deduction: "",
+        unit: "dollars",
+        description: "",
         isActive: true,
-        isMain: true,
-        address: {
-          street: "",
-          city: "",
-          country: "",
-        },
       }
   );
 
@@ -250,7 +244,7 @@ export function ManageLocationModal({
       setIsSubmitting(true);
       if (itemToEdit) {
         await axios.put(
-          `admin/${lowercaseTitle}es/${itemToEdit.positionId}`,
+          `admin/${lowercaseTitle}s/${itemToEdit.deductionId}`,
           item,
           {
             headers: { Authorization: `Bearer ${user?.token}` },
@@ -259,14 +253,14 @@ export function ManageLocationModal({
         toast.success(`${title} updated successfully`);
       } else if (itemToDelete) {
         await axios.delete(
-          `admin/${lowercaseTitle}es/${itemToDelete.positionId}`,
+          `admin/${lowercaseTitle}es/${itemToDelete.deductionId}`,
           {
             headers: { Authorization: `Bearer ${user?.token}` },
           }
         );
         toast.success(`${title} deleted successfully`);
       } else {
-        await axios.post(`admin/${lowercaseTitle}es`, item, {
+        await axios.post(`admin/${lowercaseTitle}s`, item, {
           headers: { Authorization: `Bearer ${user?.token}` },
         });
         toast.success(`${title} added successfully`);
@@ -282,23 +276,17 @@ export function ManageLocationModal({
 
   const handleInputChange = (name: string) => (e: any) => {
     const { type, checked, value } = e.target;
-    const keys = name.split(".");
-    setItem((prevData) => {
-      const updatedItem = { ...prevData };
-      let nested = updatedItem;
-      for (let i = 0; i < keys.length - 1; i++) {
-        nested = nested[keys[i]];
-      }
-      nested[keys[keys.length - 1]] = type === "checkbox" ? checked : value;
-      return updatedItem;
-    });
+    setItem((prevData) => ({
+      ...prevData,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const validateForm = (isEditing: boolean) => {
     let isFormValid = true;
 
     if (!isEditing) {
-      if (item.branch.trim() === "") {
+      if (item.deduction.trim() === "") {
         isFormValid = false;
       }
     }
@@ -330,68 +318,42 @@ export function ManageLocationModal({
           <div className="flex flex-col gap-3">
             <FormInput
               handleInputChange={handleInputChange}
-              label="Branch"
-              name="branch"
-              value={item.branch}
+              label="Deduction"
+              name="deduction"
+              value={item.deduction}
               readOnly={itemToDelete ? true : false}
               type="text"
               isValid={isValid}
               required={true}
             />
-            <FormInput
+            <FormSelect
+              value={item.unit}
+              data={units}
               handleInputChange={handleInputChange}
-              label="Street"
-              name="address.street"
-              value={item.address.street}
-              readOnly={itemToDelete ? true : false}
-              type="text"
-              isValid={isValid}
-              required={false}
+              label="Unit"
+              labelField="label"
+              name="unit"
+              placeholder="Unit"
+              valueField="unit"
+              required={true}
+              isValid={false}
             />
-            <div className="flex gap-3">
-              <FormAutoComplete
-                value={item.address.country}
-                handleInputChange={handleInputChange}
-                data={
-                  data?.countries.sort((a, b) =>
-                    a.country.localeCompare(b.country)
-                  ) ?? []
-                }
-                valueField="countryCode"
-                placeholder="Country"
-                name={"address.country"}
-                labelFields={["country"]}
-                label={"Country"}
-              />
-              <FormAutoComplete
-                value={item.address.city}
-                handleInputChange={handleInputChange}
-                data={
-                  data?.villages.sort((a, b) =>
-                    a.village.localeCompare(b.village)
-                  ) ?? []
-                }
-                valueField="village"
-                placeholder="Village"
-                name={"address.city"}
-                labelFields={["village"]}
-                label={"Village"}
-              />
-            </div>
-            <div className="flex gap-3">
-              <FormCheckbox
-                checked={item.isMain}
-                name="isMain"
-                handleInputChange={handleInputChange}
-                label="Main Branch"
-              />
-              <FormCheckbox
-                checked={item.isActive}
-                name="isActive"
-                handleInputChange={handleInputChange}
-                label="Active"
-              />
-            </div>
+            <FormTextArea
+              value={item.description}
+              handleInputChange={handleInputChange}
+              label="Description"
+              name="description"
+              required={true}
+              isValid={false}
+              readOnly={false}
+              rows={2}
+            />
+            <FormCheckbox
+              checked={item.isActive}
+              name="isActive"
+              handleInputChange={handleInputChange}
+              label="Active"
+            />
           </div>
         </div>
         <div className="modal-action">
@@ -413,15 +375,6 @@ export function ManageLocationModal({
           </button>
         </div>
       </div>
-      {addDepartmentOpen && (
-        <ManageDepartmentsModal
-          onClose={() => {
-            setAddDepartmentOpen(false);
-          }}
-          lowercaseTitle={"department"}
-          title={"department"}
-        />
-      )}
     </dialog>
   );
 }

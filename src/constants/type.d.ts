@@ -42,6 +42,8 @@ interface AdminData {
   villages: Village[];
   employees: Employee[];
   banks: Bank[];
+  deductions: Deduction[];
+  benefits: Benefits[];
 }
 
 interface Department {
@@ -124,6 +126,18 @@ interface Bank {
   createdAt?: string;
   updatedAt?: string;
   [key: string]: any;
+}
+
+interface Deduction {
+  deductionId: string;
+  deduction: string;
+  description: string;
+  isActive: boolean;
+  isDeleted: boolean;
+  modifiedBy: string;
+  createdAt?: string;
+  unit: string;
+  updatedAt?: string;
 }
 
 interface ManageItemModalProp {

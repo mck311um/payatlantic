@@ -66,6 +66,10 @@
   @apply text-neutral-900;
 }
 
+.e-grid .e-focused:not(.e-menu-item):not(.e-editedbatchcell) {
+  box-shadow: none;
+}
+
 body {
   @apply bg-neutral-50 font-poppins;
 }
@@ -135,5 +139,13 @@ body {
     &:focus {
       @apply border-neutral-400 outline-none;
     }
+  }
+
+  .grid-edit-button {
+    @apply text-blue-600 hover:text-blue-900 hover:scale-110 transition-transform mr-3;
+  }
+
+  .grid-delete-button {
+    @apply text-red-600 hover:text-red-900 hover:scale-110 transition-transform;
   }
 }

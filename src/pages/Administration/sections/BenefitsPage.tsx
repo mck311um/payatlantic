@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "../../../hooks/useAuthContext";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Settings, Trash2 } from "lucide-react";
 import {
   GridComponent,
   ColumnsDirective,
@@ -90,24 +90,29 @@ const BenefitsPage = () => {
   const renderActions = useCallback(
     (props: Benefit) => (
       <div className="">
-        <button
-          className="text-blue-600 hover:text-blue-900 mr-3"
-          onClick={() => {
-            setItemToEdit(props);
-            setManageModalOpen(true);
-          }}
-        >
-          <Pencil className="h-5 w-5" />
-        </button>
-        <button
-          className="text-red-600 hover:text-red-900"
-          onClick={() => {
-            setItemToDelete(props);
-            setManageModalOpen(true);
-          }}
-        >
-          <Trash2 className="h-5 w-5" />
-        </button>
+        <div className="tooltip tooltip-left" data-tip="Manage">
+          <button
+            className="grid-edit-button"
+            onClick={() => {
+              setItemToEdit(props);
+              setManageModalOpen(true);
+            }}
+          >
+            <Settings className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="tooltip tooltip-left" data-tip="Delete">
+          <button
+            className="grid-delete-button"
+            onClick={() => {
+              setItemToDelete(props);
+              setManageModalOpen(true);
+            }}
+          >
+            <Trash2 className="h-5 w-5" />
+          </button>
+        </div>
       </div>
     ),
     []
@@ -131,10 +136,8 @@ const BenefitsPage = () => {
   return (
     <PageLayout>
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">Employee {title}s</h1>
-        <p className="mt-1 text-lg text-gray-500">
-          Define and manage employee benefits
-        </p>
+        <h1 className="text-4xl font-bold text-gray-900">{title}s</h1>
+        <p className="mt-1 text-lg text-gray-500">Define and manage benefits</p>
       </div>
       <div className="flex gap-3 justify-between">
         <SearchBar
@@ -165,19 +168,19 @@ const BenefitsPage = () => {
               isPrimaryKey={true}
               width={500}
             />
-            <ColumnDirective field="unit" headerText="Unit" width={200} />
-
+            <ColumnDirective field="unit" headerText="Unit" width={100} />
             <ColumnDirective
               field="isActive"
               headerText="Status"
-              width={150}
+              width={100}
               template={renderStatus}
             />
             <ColumnDirective
               field=""
-              width={150}
+              width={100}
               headerText="Actions"
               template={renderActions}
+              textAlign="Right"
             />
           </ColumnsDirective>
           <Inject services={[Sort]} />
@@ -222,7 +225,6 @@ export function ManageBenefitModal({
 
   const [isValid, setIsValid] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [addDepartmentOpen, setAddDepartmentOpen] = useState(false);
 
   const [item, setItem] = useState<Benefit>(
     itemToEdit ||
@@ -370,15 +372,6 @@ export function ManageBenefitModal({
           </button>
         </div>
       </div>
-      {addDepartmentOpen && (
-        <ManageDepartmentsModal
-          onClose={() => {
-            setAddDepartmentOpen(false);
-          }}
-          lowercaseTitle={"department"}
-          title={"department"}
-        />
-      )}
     </dialog>
   );
 }

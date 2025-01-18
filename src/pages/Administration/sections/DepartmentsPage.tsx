@@ -12,7 +12,7 @@ import {
   Inject,
   Sort,
 } from "@syncfusion/ej2-react-grids";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Settings, Trash2 } from "lucide-react";
 import Loading from "../../../components/Loading";
 import AdminContext from "../../../context/AdminContext";
 import FormInput from "../../../components/FormInputs/FormInput";
@@ -85,24 +85,29 @@ const DepartmentsPage = () => {
   const renderActions = useCallback(
     (props: Department) => (
       <div className="">
-        <button
-          className="text-blue-600 hover:text-blue-900 mr-3"
-          onClick={() => {
-            setItemToEdit(props);
-            setManageModalOpen(true);
-          }}
-        >
-          <Pencil className="h-5 w-5" />
-        </button>
-        <button
-          className="text-red-600 hover:text-red-900"
-          onClick={() => {
-            setItemToDelete(props);
-            setManageModalOpen(true);
-          }}
-        >
-          <Trash2 className="h-5 w-5" />
-        </button>
+        <div className="tooltip tooltip-left" data-tip="Manage">
+          <button
+            className="grid-edit-button"
+            onClick={() => {
+              setItemToEdit(props);
+              setManageModalOpen(true);
+            }}
+          >
+            <Settings className="h-5 w-5" />
+          </button>
+        </div>
+
+        <div className="tooltip tooltip-left" data-tip="Delete">
+          <button
+            className="grid-delete-button"
+            onClick={() => {
+              setItemToDelete(props);
+              setManageModalOpen(true);
+            }}
+          >
+            <Trash2 className="h-5 w-5" />
+          </button>
+        </div>
       </div>
     ),
     []
@@ -153,11 +158,15 @@ const DepartmentsPage = () => {
           loadingIndicator={{ indicatorType: "Shimmer" }}
         >
           <ColumnsDirective>
-            <ColumnDirective field="department" headerText="Department" />
+            <ColumnDirective
+              field="department"
+              headerText="Department"
+              width={500}
+            />
             <ColumnDirective
               field="departmentHead"
               headerText="Department Head"
-              isPrimaryKey={true}
+              width={200}
             />
             <ColumnDirective
               field="headCount"
@@ -168,14 +177,15 @@ const DepartmentsPage = () => {
             <ColumnDirective
               field="isActive"
               headerText="Status"
-              width={150}
+              width={100}
               template={renderStatus}
             />
             <ColumnDirective
               field=""
-              width={150}
+              width={100}
               headerText="Actions"
               template={renderActions}
+              textAlign="Right"
             />
           </ColumnsDirective>
           <Inject services={[Sort]} />

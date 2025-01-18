@@ -15,23 +15,21 @@ import Loading from "../../../components/Loading";
 import PageLayout from "../../../components/PageLayout";
 import SearchBar from "../../../components/SearchBar";
 import FormInput from "../../../components/FormInputs/FormInput";
-import FormAutoComplete from "../../../components/FormInputs/FormAutoComplete";
 import FormCheckbox from "../../../components/FormInputs/FormCheckbox";
 import AdminContext from "../../../context/AdminContext";
 import { ManageDepartmentsModal } from "./DepartmentsPage";
-import { span } from "framer-motion/client";
-import { getCountryByCountryCode } from "../../../constants/utils";
+import FormAutoComplete from "../../../components/FormInputs/FormAutoComplete";
 
-const BanksPage = () => {
-  const title = "Bank";
+const BranchPage = () => {
+  const title = "Branch";
   const lowercaseTitle = title.toLowerCase();
 
   const { user, isLoading } = useAuthContext();
 
-  const [data, setData] = useState<Bank[]>([]);
-  const [filteredData, setFilteredData] = useState<Bank[]>([]);
-  const [itemToDelete, setItemToDelete] = useState<Bank | null>(null);
-  const [itemToEdit, setItemToEdit] = useState<Bank | null>(null);
+  const [data, setData] = useState<Branch[]>([]);
+  const [filteredData, setFilteredData] = useState<Branch[]>([]);
+  const [itemToDelete, setItemToDelete] = useState<Branch | null>(null);
+  const [itemToEdit, setItemToEdit] = useState<Branch | null>(null);
   const [loading, setLoading] = useState(false);
   const [manageModalOpen, setManageModalOpen] = useState(false);
 
@@ -40,12 +38,12 @@ const BanksPage = () => {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`admin/${lowercaseTitle}s`, {
+      const res = await axios.get(`admin/${lowercaseTitle}es`, {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
 
-      const sortedData = res.data.sort((a: Bank, b: Bank) =>
-        a.bank.localeCompare(b.bank)
+      const sortedData = res.data.sort((a: Branch, b: Branch) =>
+        a.branch.localeCompare(b.branch)
       );
       setData(sortedData);
       setFilteredData(sortedData);
@@ -75,8 +73,10 @@ const BanksPage = () => {
 
   useEffect(() => {
     const filtered = data
-      .filter((el) => el.bank.toLowerCase().includes(searchQuery.toLowerCase()))
-      .sort((a, b) => a.bank.localeCompare(b.bank));
+      .filter((el) =>
+        el.branch.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .sort((a, b) => a.branch.localeCompare(b.branch));
     setFilteredData(filtered);
   }, [searchQuery, data]);
 
@@ -85,7 +85,7 @@ const BanksPage = () => {
   };
 
   const renderActions = useCallback(
-    (props: Bank) => (
+    (props: Branch) => (
       <div className="">
         <div className="tooltip tooltip-left" data-tip="Manage">
           <button
@@ -116,7 +116,7 @@ const BanksPage = () => {
   );
 
   const renderStatus = useCallback(
-    (props: Bank) => (
+    (props: Branch) => (
       <span
         className={`inline-flex items-center px-2 py-1.5 rounded-full text-xs font-medium ${
           props.isActive === true
@@ -131,27 +131,20 @@ const BanksPage = () => {
   );
 
   const renderAddress = useCallback(
-    (props: Bank) => (
+    (props: Branch) => (
       <span>
-        {props.address.street}, {props.address.city},{" "}
-        {getCountryByCountryCode(props.address.country)}
+        {props.address.street}, {props.address.city}, {props.address.country}
       </span>
     ),
     []
   );
 
-  const renderType = useCallback(
-    (props: Bank) => (
-      <span>{props.isCreditor ? "Creditor" : "Bank/Creditor"}</span>
-    ),
-    []
-  );
   return (
     <PageLayout>
       <div>
-        <h1 className="text-4xl font-bold text-gray-900">{title}s</h1>
+        <h1 className="text-4xl font-bold text-gray-900">{title}es</h1>
         <p className="mt-1 text-lg text-gray-500">
-          Manage banks for employee payments
+          Manage office locations and facilities
         </p>
       </div>
       <div className="flex gap-3 justify-between">
@@ -176,20 +169,19 @@ const BanksPage = () => {
           loadingIndicator={{ indicatorType: "Shimmer" }}
         >
           <ColumnsDirective>
-            <ColumnDirective field="bankCode" headerText="Code" width={100} />
-            <ColumnDirective field="bank" headerText="Bank" width={400} />
+            <ColumnDirective field="branch" headerText="Branch" width={300} />
             <ColumnDirective
               field="address"
               headerText="Address"
               isPrimaryKey={true}
               template={renderAddress}
-              width={400}
+              width={500}
             />
             <ColumnDirective
-              field="isCreditor"
-              headerText="Bank Type"
+              field="headCount"
+              headerText="Head Count"
               width={200}
-              template={renderType}
+              textAlign="Center"
             />
 
             <ColumnDirective
@@ -200,17 +192,17 @@ const BanksPage = () => {
             />
             <ColumnDirective
               field=""
-              width={130}
+              width={120}
               headerText="Actions"
               template={renderActions}
-              textAlign={"Right"}
+              textAlign="Right"
             />
           </ColumnsDirective>
           <Inject services={[Sort]} />
         </GridComponent>
       )}
       {manageModalOpen && (
-        <ManageBankModal
+        <ManageLocationModal
           onClose={() => {
             setManageModalOpen(false);
             setLoading(true);
@@ -229,9 +221,9 @@ const BanksPage = () => {
   );
 };
 
-export default BanksPage;
+export default BranchPage;
 
-export function ManageBankModal({
+export function ManageLocationModal({
   onClose,
   itemToEdit,
   title,
@@ -245,13 +237,12 @@ export function ManageBankModal({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addDepartmentOpen, setAddDepartmentOpen] = useState(false);
 
-  const [item, setItem] = useState<Bank>(
+  const [item, setItem] = useState<Branch>(
     itemToEdit ||
       itemToDelete || {
-        bank: "",
-        bankCode: "",
+        branch: "",
         isActive: true,
-        isCreditor: false,
+        isMain: true,
         address: {
           street: "",
           city: "",
@@ -264,17 +255,24 @@ export function ManageBankModal({
     try {
       setIsSubmitting(true);
       if (itemToEdit) {
-        await axios.put(`admin/${lowercaseTitle}s/${itemToEdit.bankId}`, item, {
-          headers: { Authorization: `Bearer ${user?.token}` },
-        });
+        await axios.put(
+          `admin/${lowercaseTitle}es/${itemToEdit.positionId}`,
+          item,
+          {
+            headers: { Authorization: `Bearer ${user?.token}` },
+          }
+        );
         toast.success(`${title} updated successfully`);
       } else if (itemToDelete) {
-        await axios.delete(`admin/${lowercaseTitle}s/${itemToDelete.bankId}`, {
-          headers: { Authorization: `Bearer ${user?.token}` },
-        });
+        await axios.delete(
+          `admin/${lowercaseTitle}es/${itemToDelete.positionId}`,
+          {
+            headers: { Authorization: `Bearer ${user?.token}` },
+          }
+        );
         toast.success(`${title} deleted successfully`);
       } else {
-        await axios.post(`admin/${lowercaseTitle}s`, item, {
+        await axios.post(`admin/${lowercaseTitle}es`, item, {
           headers: { Authorization: `Bearer ${user?.token}` },
         });
         toast.success(`${title} added successfully`);
@@ -306,23 +304,7 @@ export function ManageBankModal({
     let isFormValid = true;
 
     if (!isEditing) {
-      if (item.bank.trim() === "") {
-        isFormValid = false;
-      }
-
-      if (item.bankCode.trim() === "") {
-        isFormValid = false;
-      }
-
-      if (item.address.street.trim() === "") {
-        isFormValid = false;
-      }
-
-      if (item.address.city.trim() === "") {
-        isFormValid = false;
-      }
-
-      if (item.address.country.trim() === "") {
+      if (item.branch.trim() === "") {
         isFormValid = false;
       }
     }
@@ -352,33 +334,16 @@ export function ManageBankModal({
           </h1>
 
           <div className="flex flex-col gap-3">
-            <div className="flex gap-3">
-              <div className="w-4/5">
-                <FormInput
-                  handleInputChange={handleInputChange}
-                  label="Bank"
-                  name="bank"
-                  value={item.bank}
-                  readOnly={itemToDelete ? true : false}
-                  type="text"
-                  isValid={isValid}
-                  required={true}
-                />
-              </div>
-              <div className="w-1/5">
-                <FormInput
-                  handleInputChange={handleInputChange}
-                  label="Code"
-                  name="bankCode"
-                  value={item.bankCode}
-                  readOnly={itemToDelete ? true : false}
-                  type="text"
-                  isValid={isValid}
-                  required={true}
-                />
-              </div>
-            </div>
-
+            <FormInput
+              handleInputChange={handleInputChange}
+              label="Branch"
+              name="branch"
+              value={item.branch}
+              readOnly={itemToDelete ? true : false}
+              type="text"
+              isValid={isValid}
+              required={true}
+            />
             <FormInput
               handleInputChange={handleInputChange}
               label="Street"
@@ -387,24 +352,9 @@ export function ManageBankModal({
               readOnly={itemToDelete ? true : false}
               type="text"
               isValid={isValid}
-              required={true}
+              required={false}
             />
             <div className="flex gap-3">
-              <FormAutoComplete
-                value={item.address.city}
-                handleInputChange={handleInputChange}
-                data={
-                  data?.villages.sort((a, b) =>
-                    a.village.localeCompare(b.village)
-                  ) ?? []
-                }
-                valueField="village"
-                placeholder="Village"
-                name={"address.city"}
-                labelFields={["village"]}
-                label={"Village"}
-                required={true}
-              />
               <FormAutoComplete
                 value={item.address.country}
                 handleInputChange={handleInputChange}
@@ -418,21 +368,34 @@ export function ManageBankModal({
                 name={"address.country"}
                 labelFields={["country"]}
                 label={"Country"}
-                required={true}
+              />
+              <FormAutoComplete
+                value={item.address.city}
+                handleInputChange={handleInputChange}
+                data={
+                  data?.villages.sort((a, b) =>
+                    a.village.localeCompare(b.village)
+                  ) ?? []
+                }
+                valueField="village"
+                placeholder="Village"
+                name={"address.city"}
+                labelFields={["village"]}
+                label={"Village"}
               />
             </div>
-            <div className="flex flex-col">
+            <div className="flex gap-3">
+              <FormCheckbox
+                checked={item.isMain}
+                name="isMain"
+                handleInputChange={handleInputChange}
+                label="Main Branch"
+              />
               <FormCheckbox
                 checked={item.isActive}
                 name="isActive"
                 handleInputChange={handleInputChange}
                 label="Active"
-              />
-              <FormCheckbox
-                checked={item.isCreditor}
-                name="isCreditor"
-                handleInputChange={handleInputChange}
-                label="Bank is a Creditor Only"
               />
             </div>
           </div>
@@ -444,7 +407,7 @@ export function ManageBankModal({
           <button
             className="btn btn-success text-white disabled:text-white font-bold text-base"
             onClick={handleSubmit}
-            disabled={isSubmitting || !isValid || !itemToDelete}
+            disabled={isSubmitting || !isValid || itemToDelete}
           >
             {isSubmitting
               ? "Submitting"
