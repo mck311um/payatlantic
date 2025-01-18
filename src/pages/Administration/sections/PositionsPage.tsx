@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "../../../hooks/useAuthContext";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Pencil, Plus, Settings, Trash2 } from "lucide-react";
+import { Plus, Settings, Trash2 } from "lucide-react";
 import PageLayout from "../../../components/PageLayout";
 import {
   GridComponent,

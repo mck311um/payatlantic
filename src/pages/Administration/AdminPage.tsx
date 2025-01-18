@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import PageLayout from "../../components/PageLayout";
 import ManagementCard from "../../components/ManagementCard";
-import { title } from "process";
 
 const AdminPage = () => {
   return (

@@ -12,7 +12,7 @@ import {
   Inject,
   Sort,
 } from "@syncfusion/ej2-react-grids";
-import { Pencil, Settings, Trash2 } from "lucide-react";
+import { Settings, Trash2 } from "lucide-react";
 import Loading from "../../../components/Loading";
 import AdminContext from "../../../context/AdminContext";
 import FormInput from "../../../components/FormInputs/FormInput";

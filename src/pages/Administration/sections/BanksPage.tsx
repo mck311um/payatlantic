@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "../../../hooks/useAuthContext";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Pencil, Settings, Trash2 } from "lucide-react";
+import { Settings, Trash2 } from "lucide-react";
 import {
   GridComponent,
   ColumnsDirective,
@@ -19,7 +19,6 @@ import FormAutoComplete from "../../../components/FormInputs/FormAutoComplete";
 import FormCheckbox from "../../../components/FormInputs/FormCheckbox";
 import AdminContext from "../../../context/AdminContext";
 import { ManageDepartmentsModal } from "./DepartmentsPage";
-import { span } from "framer-motion/client";
 import { getCountryByCountryCode } from "../../../constants/utils";
 
 const BanksPage = () => {

@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from "react";
 import { useAuthContext } from "../../../hooks/useAuthContext";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Pencil, Settings, Trash2 } from "lucide-react";
+import { Settings, Trash2 } from "lucide-react";
 import {
   GridComponent,
   ColumnsDirective,
@@ -14,14 +14,11 @@ import ButtonRow from "../../../components/ButtonRow";
 import Loading from "../../../components/Loading";
 import PageLayout from "../../../components/PageLayout";
 import SearchBar from "../../../components/SearchBar";
-import FormAutoComplete from "../../../components/FormInputs/FormAutoComplete";
 import FormCheckbox from "../../../components/FormInputs/FormCheckbox";
 import AdminContext from "../../../context/AdminContext";
-import { ManageDepartmentsModal } from "./DepartmentsPage";
 import FormInput from "../../../components/FormInputs/FormInput";
 import FormTextArea from "../../../components/FormInputs/FormTextArea";
 import FormSelect from "../../../components/FormInputs/FormSelect";
-import { label } from "framer-motion/client";
 
 const BenefitsPage = () => {
   const title = "Benefit";
